@@ -1,6 +1,6 @@
-const int electrodePins[8] = {15, 12, 14, 27, 26, 25, 33, 32};
+const int electrodePins[8] = {12, 14, 27, 26, 25, 33, 32, 15};
 
-// Corrected Wenner configuration
+// Wenner configuration for 8 electrodes
 const int wennerConfig[][4] = {
   // Layer 1 (5 measurements)
   {0, 1, 2, 3}, {1, 2, 3, 4}, {2, 3, 4, 5}, {3, 4, 5, 6}, {4, 5, 6, 7},
@@ -8,18 +8,20 @@ const int wennerConfig[][4] = {
   {0, 1, 3, 4}, {1, 2, 4, 5}, {2, 3, 5, 6}, {3, 4, 6, 7},
   // Layer 3 (3 measurements)
   {0, 1, 4, 5}, {1, 2, 5, 6}, {2, 3, 6, 7},
-  // Layer 4 (1 measurement)
+  // Layer 4 (2 measurements)
+  {0, 1, 5, 6}, {1, 2, 6, 7},
+  // Layer 5 (1 measurement)
   {0, 1, 6, 7}
 };
-const int numConfigurations = 13;  // Total number of measurements
-const int layerSizes[] = {5, 4, 3, 1};  // Number of measurements in each layer
+const int numConfigurations = 15;  // Total number of measurements
+const int layerSizes[] = {5, 4, 3, 2, 1};  // Number of measurements in each layer
 
 // Constants for current injection and impedance calculation
 const float CURRENT_LIMIT_RESISTOR = 2000.0; // Using 2k ohm resistor
 const float ESP32_VOLTAGE = 3.3; // ESP32 output voltage
 const float ACTUAL_CURRENT = ESP32_VOLTAGE / CURRENT_LIMIT_RESISTOR;
 
-float measurements[13];  // Array to store all measurements
+float measurements[15];  // Array to store all measurements
 
 void setup() {
   Serial.begin(115200);
@@ -34,7 +36,7 @@ void setup() {
 
 void loop() {
   int configIndex = 0;
-  for (int layer = 0; layer < 4; layer++) {  // Now we have 4 layers
+  for (int layer = 0; layer < 5; layer++) {
     Serial.printf("Layer %d\n", layer + 1);
     
     for (int measurement = 0; measurement < layerSizes[layer]; measurement++) {
@@ -72,7 +74,7 @@ void loop() {
       configIndex++;
     }
     
-    if (layer < 3) {  // Don't print dashes after the last layer
+    if (layer < 4) {  // Don't print dashes after the last layer
       Serial.println("------");
     }
   }
