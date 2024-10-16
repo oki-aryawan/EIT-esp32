@@ -52,7 +52,7 @@ void loop() {
         delay(10);  // Allow current to stabilize
 
         float voltage = measureVoltage(voltage1, voltage2);
-        float impedance = calculateImpedance(voltage);
+        float impedance = abs(calculateImpedance(voltage));
         
         measurements[configIndex] = impedance;  // Store the impedance value
         
@@ -79,19 +79,15 @@ void loop() {
     }
   }
   
-  // Print all measurements in a list format
-  Serial.println("\nAll measurements (impedance values in ohms):");
-  Serial.println("[");
+  // Print all measurements in a single line
+  Serial.print("All measurements: ");
   for (int i = 0; i < numConfigurations; i++) {
-    Serial.print(measurements[i]);
+    Serial.print(measurements[i], 2); // Print with 2 decimal places
     if (i < numConfigurations - 1) {
       Serial.print(", ");
     }
-    if ((i + 1) % 5 == 0) {
-      Serial.println();
-    }
   }
-  Serial.println("\n]");
+  Serial.println(); // New line after all measurements
   
   Serial.println("Enter to restart");
   waitForInput();
